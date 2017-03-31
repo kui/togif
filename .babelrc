@@ -1,0 +1,39 @@
+// -*- coding:utf-8-unix; mode:js; -*-
+{
+  presets: [
+    ["env", {
+      loose: true,
+      targets: {
+        // See http://caniuse.com/usage-table
+        chrome: 56,
+        node: 7.4,
+      },
+    }],
+  ],
+  plugins: [
+    "transform-flow-strip-types",
+  ],
+  env: {
+    production: {
+      presets: [
+        ["env", {
+          loose: true,
+          targets: {
+            chrome: 53,
+          },
+        }],
+        "babili",
+      ],
+      plugins: [
+        "transform-flow-strip-types",
+        ["strip-function-call", {
+          strip: [
+            "console.debug",
+            "console.time",
+            "console.timeEnd",
+          ]
+        }]
+      ],
+    },
+  },
+}
