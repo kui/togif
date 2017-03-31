@@ -1,11 +1,30 @@
 import test from 'ava'
+import del from 'del'
+import { spawn } from 'child_process'
+
 import path from 'path'
 import fs from 'fs'
+
 import Thumbnailer from './../../src/lib/thumbnailer'
 import { tmpDir } from './../../src/lib/util'
-import del from 'del'
+
+function hasFfmpeg () {
+  return new Promise(resolve => {
+    try {
+      spawn('ffmpeg', ['-version'])
+        .on('error', err => resolve(!err))
+        .on('close', code => resolve(code === 0))
+    } catch (e) {
+      resolve(false)
+    }
+  })
+}
 
 test(async t => {
+  if (!await hasFfmpeg()) {
+    return
+  }
+
   const thumbnailer = new Thumbnailer()
   const videoFile = path.resolve(__dirname, '..', 'big_buck_bunny.mp4')
   const destDir = await tmpDir({ prefix: 'test-' })
